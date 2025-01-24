@@ -1,0 +1,66 @@
+/* Login.css */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f9; /* Màu nền dịu mắt */
+}
+
+.login-form {
+  background-color: #fff; /* Màu nền form trắng */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #333; /* Màu chữ tiêu đề */
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555; /* Màu chữ label */
+  font-size: 14px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333; /* Màu chữ trong input */
+  background-color: #fff; /* Nền trắng */
+}
+
+.input-group input:focus {
+  border-color: #007bff; /* Viền xanh khi focus */
+  outline: none;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff; /* Màu chữ nút Login */
+  background-color: #007bff; /* Nền nút xanh */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3; /* Màu nút khi hover */
+}
