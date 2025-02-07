@@ -29,11 +29,13 @@ import {
   deleteProduct,
   getProductRestaurantId,
   updateProduct,
+  updateProductStatus,
 } from "../../componet/State/Product/Action";
 import {
   getCategory,
   getCategoryItems,
 } from "../../componet/State/CategoryTest/Action";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function ProductTable() {
   const dispatch = useDispatch();
@@ -97,6 +99,27 @@ export default function ProductTable() {
       setCurrentPage(page);
     }
   };
+
+  // ✅ Xử lý cập nhật trạng thái sản phẩm
+  const handleUpdateStatus = (product) => {
+    const newStatus = product.status === 1 ? 0 : 1; // Đảo trạng thái
+    dispatch(updateProductStatus(product.id, newStatus, jwt))
+      .then(() => {
+        dispatch(
+          getProductRestaurantId({
+            jwt,
+            restaurantId: restaurant.usersRestaurant.id,
+            page: currentPage,
+            size: pageSize,
+          })
+        );
+        toast.success("✅ Cập nhật trạng thái thành công!");
+      })
+      .catch(() => {
+        toast.error("❌ Cập nhật trạng thái thất bại!");
+      });
+  };
+  
 
   // Xử lý mở/đóng popup
   const handleOpen = () => {
@@ -222,6 +245,7 @@ export default function ProductTable() {
 
   return (
     <Box>
+      <ToastContainer />
       <Card className="mt-1">
         <CardHeader
           action={
@@ -282,6 +306,7 @@ export default function ProductTable() {
                   <TableCell align="right">
                     <Button
                       variant="contained"
+                      onClick={() => handleUpdateStatus(item)} // ✅ Thêm xử lý cập nhật trạng thái
                       style={{
                         backgroundColor: item.status === 1 ? "green" : "red",
                       }}
@@ -289,6 +314,7 @@ export default function ProductTable() {
                       {item.status === 1 ? "Còn Hàng" : "Hết Hàng"}
                     </Button>
                   </TableCell>
+
                   <TableCell align="right">
                     <IconButton
                       color="primary"
