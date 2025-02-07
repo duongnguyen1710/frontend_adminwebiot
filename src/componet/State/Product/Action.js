@@ -1,6 +1,6 @@
 
 import { api } from "../../config/api";
-import { CREATE_PRODUCT_FAILURE, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAILURE, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, GET_PRODUCT_BY_RESTAURANT_ID_FAILURE, GET_PRODUCT_BY_RESTAURANT_ID_REQUEST, GET_PRODUCT_BY_RESTAURANT_ID_SUCCESS, UPDATE_PRODUCT_FAILURE, UPDATE_PRODUCT_REQUEST, UPDATE_PRODUCT_SUCCESS } from "./ActionType";
+import { CREATE_PRODUCT_FAILURE, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAILURE, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, GET_PRODUCT_BY_RESTAURANT_ID_FAILURE, GET_PRODUCT_BY_RESTAURANT_ID_REQUEST, GET_PRODUCT_BY_RESTAURANT_ID_SUCCESS, UPDATE_PRODUCT_FAILURE, UPDATE_PRODUCT_REQUEST, UPDATE_PRODUCT_SUCCESS, UPDATE_STATUS_FAILURE, UPDATE_STATUS_REQUEST, UPDATE_STATUS_SUCCESS } from "./ActionType";
 //import { CREATE_MENU_ITEM_FAILURE, CREATE_MENU_ITEM_REQUEST, CREATE_MENU_ITEM_SUCCESS, DELETE_MENU_ITEM_FAILURE, DELETE_MENU_ITEM_REQUEST, DELETE_MENU_ITEM_SUCCESS, GET_MENU_ITEMS_BY_RESTAURANT_ID_FAILURE, GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST, GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, SEARCH_MENU_ITEM_FAILURE, SEARCH_MENU_ITEM_REQUEST, SEARCH_MENU_ITEM_SUCCESS, UPDATE_MENU_ITEMS_AVAILABILITY_FAILURE, UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST, UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS } from "./ActionType";
 
 // export const createMenuItem = ({menu, jwt}) => {
@@ -180,4 +180,31 @@ export const createProduct = (productData, jwt) => {
             });
         }
     };
+};
+
+export const updateProductStatus = (productId, status, jwt) => async (dispatch) => {
+  try {
+    dispatch({ type: UPDATE_STATUS_REQUEST });
+
+    const response = await api.put(
+      `/api/admin/product/${productId}/update-status?status=${status}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+
+    dispatch({
+      type: UPDATE_STATUS_SUCCESS,
+      payload: response.data,
+    });
+
+  } catch (error) {
+    dispatch({
+      type: UPDATE_STATUS_FAILURE,
+      payload: error.response?.data || "Lỗi khi cập nhật trạng thái sản phẩm",
+    });
+  }
 };

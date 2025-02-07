@@ -66,6 +66,7 @@ const productReducer = (state = initialState, action) => {
         error: action.payload,
         message: "Failed to create product.",
       };
+
     case actionTypes.UPDATE_PRODUCT_REQUEST:
       return {
         ...state,
@@ -91,30 +92,57 @@ const productReducer = (state = initialState, action) => {
         message: "Cập nhật sản phẩm thất bại.",
       };
 
-      case actionTypes.DELETE_PRODUCT_REQUEST:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-  
-      case actionTypes.DELETE_PRODUCT_SUCCESS:
-        return {
-          ...state,
-          loading: false,
-          products: state.products.filter(
-            (product) => product.id !== action.payload // Loại bỏ sản phẩm đã xóa
-          ),
-          message: "Xóa sản phẩm thành công.",
-        };
-  
-      case actionTypes.DELETE_PRODUCT_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-          message: "Xóa sản phẩm thất bại.",
-        };
+    case actionTypes.DELETE_PRODUCT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.DELETE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        products: state.products.filter(
+          (product) => product.id !== action.payload // Loại bỏ sản phẩm đã xóa
+        ),
+        message: "Xóa sản phẩm thành công.",
+      };
+
+    case actionTypes.DELETE_PRODUCT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        message: "Xóa sản phẩm thất bại.",
+      };
+
+    // ✅ Cập nhật trạng thái sản phẩm (1: Còn hàng, 2: Hết hàng)
+    case actionTypes.UPDATE_STATUS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.UPDATE_STATUS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        products: state.products.map((product) =>
+          product.id === action.payload.id ? { ...product, status: action.payload.status } : product
+        ),
+        message: "Trạng thái sản phẩm đã được cập nhật thành công.",
+      };
+
+    case actionTypes.UPDATE_STATUS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        message: "Cập nhật trạng thái sản phẩm thất bại.",
+      };
+
     default:
       return state;
   }
