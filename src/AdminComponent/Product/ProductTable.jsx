@@ -33,6 +33,7 @@ import {
 } from "../../componet/State/Product/Action";
 import {
   getCategory,
+  getCategory1,
   getCategoryItems,
 } from "../../componet/State/CategoryTest/Action";
 import { toast, ToastContainer } from "react-toastify";
@@ -441,7 +442,7 @@ export default function ProductTable() {
                 categoryItem: "",
               }));
               dispatch(
-                getCategoryItems({
+                getCategory({
                   categoryId,
                   restaurantId: formData.restaurantId,
                 })
