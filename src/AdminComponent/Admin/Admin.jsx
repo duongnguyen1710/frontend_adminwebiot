@@ -18,6 +18,7 @@ import CategoryTest from '../CategoryTest/CategoryTest'
 import Product from '../Product/Product'
 import Blog from '../Blog/Blog'
 import Orderss from '../Orders/Orderss'
+import Categories from '../Categories/Categories'
 
 
 const Admin = () => {
@@ -55,6 +56,7 @@ const Admin = () => {
                 <Route path='/product' element={<Product/>}/>
                 <Route path='/menu' element={<Menu/>}/>
                 <Route path='/category' element={<FoodCategory/>}/>
+                <Route path='/categories' element={<Categories/>}/>
                 <Route path='/ingredients' element={<Ingredients/>}/>
                 <Route path='/blog' element={<Blog/>}/>
                 <Route path='/event' element={<Events/>}/>

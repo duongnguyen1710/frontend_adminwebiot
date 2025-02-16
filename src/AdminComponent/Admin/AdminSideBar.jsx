@@ -14,7 +14,8 @@ import { logout } from '../../componet/State/Authentication/Action';
 const menu = [
     { title: "Dashboard", icon: <Dashboard />, path: "/" },
     { title: "Đơn hàng", icon: <ShoppingBag />, path: "/orders" },
-    { title: "Danh mục", icon: <ShopTwoIcon />, path: "/categoryTest" },
+    // { title: "Danh mục", icon: <ShopTwoIcon />, path: "/categoryTest" },
+    { title: "Danh mục", icon: <ShopTwoIcon />, path: "/categories" },
     { title: "Sản phẩm", icon: <ShopTwoIcon />, path: "/product" },
     { title: "Blog", icon: <ShopTwoIcon />, path: "/blog" },
     // { title: "Menu", icon: <ShopTwoIcon />, path: "/menu" },
