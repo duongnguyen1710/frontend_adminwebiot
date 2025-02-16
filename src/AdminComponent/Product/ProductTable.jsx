@@ -59,6 +59,15 @@ export default function ProductTable() {
     restaurantId: restaurant?.usersRestaurant?.id || null,
   });
 
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    setFormData((prev) => ({
+      ...prev,
+      fileObjects: files, // ✅ Lưu file thực tế để gửi lên server
+      images: files.map((file) => URL.createObjectURL(file)), // Hiển thị ảnh xem trước
+    }));
+  };
+
   useEffect(() => {
     if (restaurant?.usersRestaurant?.id) {
       // Gọi API lấy sản phẩm
@@ -119,7 +128,6 @@ export default function ProductTable() {
         toast.error("❌ Cập nhật trạng thái thất bại!");
       });
   };
-  
 
   // Xử lý mở/đóng popup
   const handleOpen = () => {
@@ -193,14 +201,22 @@ export default function ProductTable() {
       price: Number(formData.price),
       category: { id: formData.category },
       categoryItem: { id: formData.categoryItem },
-      images: formData.images,
       restaurantId: formData.restaurantId,
-      status: formData.status,
     };
 
+    const formDataData = new FormData();
+    formDataData.append("request", JSON.stringify(productData));
+
+    // ✅ Nếu có ảnh, thêm từng file vào formData để gửi lên Cloudinary
+    if (formData.fileObjects && formData.fileObjects.length > 0) {
+      formData.fileObjects.forEach((file) => {
+        formDataData.append("images", file);
+      });
+    }
+
     if (formData.id) {
-      // Nếu đang sửa sản phẩm
-      dispatch(updateProduct(formData.id, productData, jwt)).then(() => {
+      // ✅ Nếu đang cập nhật sản phẩm
+      dispatch(updateProduct(formData.id, formDataData, jwt)).then(() => {
         handleClose();
         dispatch(
           getProductRestaurantId({
@@ -212,8 +228,10 @@ export default function ProductTable() {
         );
       });
     } else {
-      // Nếu đang tạo sản phẩm
-      dispatch(createProduct(productData, jwt)).then(() => {
+      // ✅ Nếu đang tạo mới sản phẩm
+      console.log("📤 Sending FormData:", formDataData);
+
+      dispatch(createProduct(formDataData, jwt)).then(() => {
         handleClose();
         dispatch(
           getProductRestaurantId({
@@ -393,9 +411,12 @@ export default function ProductTable() {
             label="Mô tả"
             fullWidth
             margin="dense"
+            multiline
+            rows={4} // ✅ Hiển thị nhiều dòng hơn
             value={formData.description}
             onChange={handleInputChange}
           />
+
           <TextField
             name="price"
             label="Giá"
@@ -460,28 +481,27 @@ export default function ProductTable() {
             )}
           </TextField>
           <Box mt={2}>
-            <TextField
-              name="images"
-              label="Đường dẫn ảnh"
-              fullWidth
-              margin="dense"
-              value={formData.images.join(", ")} // Hiển thị các đường dẫn dưới dạng chuỗi, ngăn cách bởi dấu phẩy
-              onChange={(e) => {
-                const imageUrls = e.target.value
-                  .split(",")
-                  .map((url) => url.trim());
-                setFormData((prev) => ({ ...prev, images: imageUrls }));
-              }}
-              placeholder="Nhập các đường dẫn ảnh, cách nhau bằng dấu phẩy"
-            />
-            <Box mt={1} display="flex" flexDirection="column">
+            {/* Input chọn file */}
+            <Button variant="contained" component="label">
+              Chọn ảnh
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                onChange={handleFileChange}
+              />
+            </Button>
+
+            {/* Hiển thị ảnh đã chọn */}
+            <Box mt={2} display="flex" flexWrap="wrap" gap={1}>
               {formData.images.length > 0 &&
                 formData.images.map((img, index) => (
                   <Avatar
                     key={index}
                     src={img}
                     alt={`preview-${index}`}
-                    sx={{ width: 56, height: 56, marginBottom: 1 }}
+                    sx={{ width: 56, height: 56 }}
                   />
                 ))}
             </Box>

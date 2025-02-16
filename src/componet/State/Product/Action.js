@@ -44,33 +44,29 @@ export const getProductRestaurantId = (reqData) => {
     };
 };
 
-export const updateProduct = (productId, productData, jwt) => {
-    return async (dispatch) => {
-      dispatch({ type: UPDATE_PRODUCT_REQUEST });
-  
+export const updateProduct = (id, formData, jwt) => {
+  return async (dispatch) => {
       try {
-        const { data } = await api.put(
-          `/api/admin/product/${productId}`,
-          productData,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
-        );
-  
-        dispatch({
-          type: UPDATE_PRODUCT_SUCCESS,
-          payload: data, // Dữ liệu sản phẩm đã sửa trả về từ server
-        });
+          const { data } = await api.put(`/api/admin/product/${id}`, formData, {
+              headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: `Breaer ${jwt}`,
+              },
+          });
+
+          dispatch({
+              type: UPDATE_PRODUCT_SUCCESS,
+              payload: data,
+          });
       } catch (error) {
-        dispatch({
-          type: UPDATE_PRODUCT_FAILURE,
-          payload: error.response?.data || error.message, // Thông báo lỗi từ server hoặc lỗi chung
-        });
+          dispatch({
+              type: UPDATE_PRODUCT_FAILURE,
+              payload: error.response?.data || error.message,
+          });
       }
-    };
   };
+};
+
 
   export const deleteProduct = (productId, jwt) => {
     return async (dispatch) => {
@@ -154,32 +150,34 @@ export const updateProduct = (productId, productData, jwt) => {
 //         }
 //     };
 
-export const createProduct = (productData, jwt) => {
-    return async (dispatch) => {
-        dispatch({ type: CREATE_PRODUCT_REQUEST });
+export const createProduct = (formData, jwt) => {
+  return async (dispatch) => {
+      dispatch({ type: CREATE_PRODUCT_REQUEST });
 
-        try {
-            const { data } = await api.post(
-                '/api/admin/product',
-                productData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${jwt}`,
-                    },
-                }
-            );
+      try {
+          console.log("📡 Gửi request đến API...");
 
-            dispatch({
-                type: CREATE_PRODUCT_SUCCESS,
-                payload: data, // Dữ liệu sản phẩm trả về từ server
-            });
-        } catch (error) {
-            dispatch({
-                type: CREATE_PRODUCT_FAILURE,
-                payload: error.response?.data || error.message, // Thông báo lỗi từ server hoặc lỗi chung
-            });
-        }
-    };
+          const { data } = await api.post('/api/admin/product', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${jwt}`,
+              },
+          });
+
+          console.log("✅ API Response:", data);
+
+          dispatch({
+              type: CREATE_PRODUCT_SUCCESS,
+              payload: data,
+          });
+      } catch (error) {
+          console.error("❌ API Error:", error);
+          dispatch({
+              type: CREATE_PRODUCT_FAILURE,
+              payload: error.response?.data || error.message,
+          });
+      }
+  };
 };
 
 export const updateProductStatus = (productId, status, jwt) => async (dispatch) => {
