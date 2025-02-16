@@ -20,7 +20,7 @@ const rooteReducer = combineReducers({
     order:orderReducer,
     restaurantOrder: restaurantsOrderReducer,
     ingredients: ingredientReducer,
-    category: categoryTestReducer,
+    // category: categoryTestReducer,
     product: productReducer,
     blog: blogReducer,
     categories:categoriesReducer
