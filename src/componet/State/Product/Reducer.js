@@ -5,6 +5,7 @@ const initialState = {
   loading: false,
   error: null,
   message: null,
+  availableProductCount: 0, // Thêm state để lưu số lượng sản phẩm có sẵn
   pagination: {
     page: 0,
     size: 10,
@@ -141,6 +142,28 @@ const productReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
         message: "Cập nhật trạng thái sản phẩm thất bại.",
+      };
+
+    // ✅ Thêm reducer đếm số lượng sản phẩm có sẵn
+    case actionTypes.COUNT_PRODUCT_AVAILABLE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case actionTypes.COUNT_PRODUCT_AVAILABLE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        availableProductCount: action.payload, // Lưu số lượng sản phẩm có sẵn
+      };
+
+    case actionTypes.COUNT_PRODUCT_AVAILABLE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
 
     default:

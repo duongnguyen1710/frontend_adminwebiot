@@ -32,8 +32,10 @@ import {
 // Danh sách các phương thức thanh toán
 const paymentTypes = {
   1: "VnPay",
+  2: "ZaloPay",
   3: "Stripe",
   4: "Tiền mặt",
+  5: "Momo",
 };
 const paymentStatuses = ["Chưa thanh toán", "Đã thanh toán"];
 const statusOptions = [

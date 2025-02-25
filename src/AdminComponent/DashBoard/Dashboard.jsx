@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Card, CardContent, Typography } from '@mui/material';
-import { getTotalPriceOrders } from '../../componet/State/Order/Action';
-import { getTotalOrders } from '../../componet/State/Order/Action'; // Import action
+import { getTotalPriceOrders, getTotalOrders } from '../../componet/State/Order/Action';
+import { countAvailableProducts } from '../../componet/State/Product/Action'; // Import action để đếm sản phẩm đang bán
 
 const RestaurantDashboard = () => {
   const dispatch = useDispatch();
@@ -15,6 +15,9 @@ const RestaurantDashboard = () => {
     totalOrders,
     ordersLoading,
     ordersError,
+    availableProductCount, // Lấy số lượng sản phẩm đang bán
+    productLoading,
+    productError,
   } = useSelector((state) => ({
     totalRevenue: state.order.totalRevenue, // Tổng doanh thu
     revenueLoading: state.order.revenueLoading, // Trạng thái đang tải doanh thu
@@ -22,6 +25,9 @@ const RestaurantDashboard = () => {
     totalOrders: state.order.totalOrders, // Tổng số đơn hàng
     ordersLoading: state.order.ordersLoading, // Trạng thái đang tải tổng số đơn hàng
     ordersError: state.order.ordersError, // Lỗi khi tải tổng số đơn hàng
+    availableProductCount: state.product.availableProductCount, // Tổng số sản phẩm đang bán
+    productLoading: state.product.loading, // Trạng thái loading khi lấy số lượng sản phẩm
+    productError: state.product.error, // Lỗi khi lấy số lượng sản phẩm
   }));
 
   // Gọi API khi component được mount
@@ -30,6 +36,7 @@ const RestaurantDashboard = () => {
     if (jwt) {
       dispatch(getTotalPriceOrders(jwt)); // Gọi action lấy tổng doanh thu
       dispatch(getTotalOrders(jwt)); // Gọi action lấy tổng số đơn hàng
+      dispatch(countAvailableProducts({ jwt })); // Gọi action lấy số lượng sản phẩm đang bán
     } else {
       console.error('JWT not found in localStorage');
     }
@@ -44,6 +51,9 @@ const RestaurantDashboard = () => {
       {revenueError && <Typography color="error">{revenueError}</Typography>}
       {ordersLoading && <Typography>Đang tải tổng số đơn hàng...</Typography>}
       {ordersError && <Typography color="error">{ordersError}</Typography>}
+      {productLoading && <Typography>Đang tải số lượng sản phẩm...</Typography>}
+      {productError && <Typography color="error">{productError}</Typography>}
+
       <Grid container spacing={2}>
         {/* Tổng Doanh Thu */}
         <Grid item xs={12} md={6} lg={3}>
@@ -79,20 +89,17 @@ const RestaurantDashboard = () => {
           </Card>
         </Grid>
 
-        {/* Đơn Hàng Trung Bình */}
-        {/* <Grid item xs={12} md={6} lg={3}>
+        {/* Sản Phẩm Đang Bán */}
+        <Grid item xs={12} md={6} lg={3}>
           <Card>
             <CardContent>
-              <Typography variant="h6">📊 Đơn Hàng Trung Bình</Typography>
+              <Typography variant="h6">🛍️ Sản Phẩm Đang Bán</Typography>
               <Typography variant="h4">
-                {totalRevenue && totalOrders
-                  ? (totalRevenue / totalOrders).toLocaleString()
-                  : 'N/A'}{' '}
-                VNĐ
+                {availableProductCount !== null ? availableProductCount : 0}
               </Typography>
             </CardContent>
           </Card>
-        </Grid> */}
+        </Grid>
       </Grid>
     </div>
   );

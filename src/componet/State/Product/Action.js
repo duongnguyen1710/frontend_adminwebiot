@@ -1,6 +1,6 @@
 
 import { api } from "../../config/api";
-import { CREATE_PRODUCT_FAILURE, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAILURE, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, GET_PRODUCT_BY_RESTAURANT_ID_FAILURE, GET_PRODUCT_BY_RESTAURANT_ID_REQUEST, GET_PRODUCT_BY_RESTAURANT_ID_SUCCESS, UPDATE_PRODUCT_FAILURE, UPDATE_PRODUCT_REQUEST, UPDATE_PRODUCT_SUCCESS, UPDATE_STATUS_FAILURE, UPDATE_STATUS_REQUEST, UPDATE_STATUS_SUCCESS } from "./ActionType";
+import { COUNT_PRODUCT_AVAILABLE_FAILURE, COUNT_PRODUCT_AVAILABLE_REQUEST, COUNT_PRODUCT_AVAILABLE_SUCCESS, CREATE_PRODUCT_FAILURE, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAILURE, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, GET_PRODUCT_BY_RESTAURANT_ID_FAILURE, GET_PRODUCT_BY_RESTAURANT_ID_REQUEST, GET_PRODUCT_BY_RESTAURANT_ID_SUCCESS, UPDATE_PRODUCT_FAILURE, UPDATE_PRODUCT_REQUEST, UPDATE_PRODUCT_SUCCESS, UPDATE_STATUS_FAILURE, UPDATE_STATUS_REQUEST, UPDATE_STATUS_SUCCESS } from "./ActionType";
 //import { CREATE_MENU_ITEM_FAILURE, CREATE_MENU_ITEM_REQUEST, CREATE_MENU_ITEM_SUCCESS, DELETE_MENU_ITEM_FAILURE, DELETE_MENU_ITEM_REQUEST, DELETE_MENU_ITEM_SUCCESS, GET_MENU_ITEMS_BY_RESTAURANT_ID_FAILURE, GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST, GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, SEARCH_MENU_ITEM_FAILURE, SEARCH_MENU_ITEM_REQUEST, SEARCH_MENU_ITEM_SUCCESS, UPDATE_MENU_ITEMS_AVAILABILITY_FAILURE, UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST, UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS } from "./ActionType";
 
 // export const createMenuItem = ({menu, jwt}) => {
@@ -204,5 +204,38 @@ export const updateProductStatus = (productId, status, jwt) => async (dispatch) 
       type: UPDATE_STATUS_FAILURE,
       payload: error.response?.data || "Lỗi khi cập nhật trạng thái sản phẩm",
     });
+  }
+};
+
+export const countAvailableProducts = (reqData) => async (dispatch) => {
+  try {
+      dispatch({ type: COUNT_PRODUCT_AVAILABLE_REQUEST });
+      console.log("🔄 Bắt đầu gọi API đếm số lượng sản phẩm...");
+
+      const config = {
+          headers: {
+              Authorization: `Bearer ${reqData.jwt}`,
+          },
+      };
+
+      const { data } = await api.get('/api/admin/product/countByStatus?status=1', config);
+
+      console.log("✅ API thành công! Số lượng sản phẩm có sẵn:", data.count);
+
+      dispatch({
+          type: COUNT_PRODUCT_AVAILABLE_SUCCESS,
+          payload: data.count,
+      });
+  } catch (error) {
+      const errorMessage = error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+
+      console.error("❌ API thất bại! Lỗi:", errorMessage);
+
+      dispatch({
+          type: COUNT_PRODUCT_AVAILABLE_FAILURE,
+          payload: errorMessage,
+      });
   }
 };
