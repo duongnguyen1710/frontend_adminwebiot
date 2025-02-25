@@ -3,14 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Card, CardContent, Typography, Box, Button, TextField } from '@mui/material';
 import { getTotalPriceOrders, getTotalOrders } from '../../componet/State/Order/Action';
 import { countAvailableProducts } from '../../componet/State/Product/Action';
-import { filterTotalOrdersAndPrice } from '../../componet/State/Order/Action'; // ✅ Import action filter
+import { filterTotalOrdersAndPrice } from '../../componet/State/Order/Action';
+import { ToastContainer, toast } from 'react-toastify'; // ✅ Import ToastContainer & toast
+import 'react-toastify/dist/ReactToastify.css';
 
 const RestaurantDashboard = () => {
   const dispatch = useDispatch();
-  
-  // State lưu trữ ngày bắt đầu và kết thúc để filter
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+
+  // State lưu trữ ngày giờ bắt đầu và kết thúc để filter
+  const [startDateTime, setStartDateTime] = useState('');
+  const [endDateTime, setEndDateTime] = useState('');
 
   // Lấy dữ liệu từ Redux store
   const {
@@ -28,10 +30,10 @@ const RestaurantDashboard = () => {
     availableProductCount: state.product.availableProductCount,
     productLoading: state.product.loading,
     productError: state.product.error,
-    filteredTotalSales: state.order.filteredTotalSales, // ✅ Doanh thu sau khi lọc
-    filteredTotalOrders: state.order.filteredTotalOrders, // ✅ Đơn hàng sau khi lọc
-    filterLoading: state.order.filterLoading, // ✅ Trạng thái loading khi lọc
-    filterError: state.order.filterError, // ✅ Lỗi khi lọc
+    filteredTotalSales: state.order.filteredTotalSales,
+    filteredTotalOrders: state.order.filteredTotalOrders,
+    filterLoading: state.order.filterLoading,
+    filterError: state.order.filterError,
   }));
 
   // Gọi API lấy dữ liệu mặc định khi vào trang
@@ -46,55 +48,65 @@ const RestaurantDashboard = () => {
     }
   }, [dispatch]);
 
-  // Hàm xử lý filter doanh thu & đơn hàng theo ngày
+  // Hàm xử lý filter doanh thu & đơn hàng theo ngày + giờ
   const handleFilter = () => {
-    if (!startDate || !endDate) {
-      alert("Vui lòng chọn ngày bắt đầu và ngày kết thúc!");
+    if (!startDateTime || !endDateTime) {
+      toast.warn("⚠️ Vui lòng chọn ngày giờ bắt đầu và ngày giờ kết thúc!");
       return;
     }
 
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      dispatch(filterTotalOrdersAndPrice(`${startDate}T00:00:00`, `${endDate}T23:59:59`, jwt));
+      dispatch(filterTotalOrdersAndPrice(startDateTime, endDateTime, jwt)).then(() => {
+        if (filteredTotalSales === 0 && filteredTotalOrders === 0) {
+          toast.info("🔍 Không có kết quả hợp lệ!");
+        } else {
+          toast.success("Kết quả tìm kiếm");
+        }
+      });
     }
-  };
-
-  // Hàm reload lại trang (hoặc gọi lại API lấy dữ liệu ban đầu)
-  const handleReload = () => {
-    window.location.reload(); // Cách đơn giản nhất để reload trang
-    // Hoặc gọi lại các API ban đầu:
-    // dispatch(getTotalPriceOrders(jwt));
-    // dispatch(getTotalOrders(jwt));
-    // dispatch(countAvailableProducts({ jwt }));
   };
 
   return (
     <Box sx={{ padding: 3 }}>
+      <ToastContainer position="top-right" autoClose={3000} /> {/* ✅ Thêm ToastContainer */}
+      
       <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
         📊 Thống Kê
       </Typography>
 
-      {/* Ô nhập ngày và nút filter */}
+      {/* Ô nhập ngày và giờ + nút filter */}
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginBottom: 3 }}>
         <TextField
-          type="date"
-          label="Từ ngày"
+          type="datetime-local"
+          label="Từ ngày & giờ"
           InputLabelProps={{ shrink: true }}
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          value={startDateTime}
+          onChange={(e) => setStartDateTime(e.target.value)}
         />
         <TextField
-          type="date"
-          label="Đến ngày"
+          type="datetime-local"
+          label="Đến ngày & giờ"
           InputLabelProps={{ shrink: true }}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          value={endDateTime}
+          onChange={(e) => setEndDateTime(e.target.value)}
         />
         <Button variant="contained" color="primary" onClick={handleFilter} disabled={filterLoading}>
           {filterLoading ? "Đang lọc..." : "Lọc"}
         </Button>
-        <Button variant="outlined" color="secondary" onClick={handleReload}>
-          🔄 Làm mới
+        <Button
+          variant="contained"
+          onClick={() => window.location.reload()} // Tải lại trang
+          sx={{
+            backgroundColor: '#1976D2',
+            color: 'white',
+            fontWeight: 'bold',
+            '&:hover': {
+              backgroundColor: '#1565C0',
+            }
+          }}
+        >
+          Làm mới
         </Button>
       </Box>
 
