@@ -32,16 +32,16 @@ import {
   updateProductStatus,
 } from "../../componet/State/Product/Action";
 import {
-  getCategory,
   getCategory1,
   getCategoryItems,
 } from "../../componet/State/CategoryTest/Action";
 import { toast, ToastContainer } from "react-toastify";
+import { getCategory } from "../../componet/State/Categories/Action";
 
 export default function ProductTable() {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { restaurant, product, category } = useSelector((store) => store);
+  const { restaurant, product, categories } = useSelector((store) => store);
 
   // State cho trang hiện tại
   const [currentPage, setCurrentPage] = useState(0);
@@ -449,7 +449,7 @@ export default function ProductTable() {
               ); // Lấy danh mục con
             }}
           >
-            {category?.category?.map((cat) => (
+            {categories?.category?.map((cat) => (
               <MenuItem key={cat.id} value={cat.id}>
                 {cat.name}
               </MenuItem>
@@ -467,8 +467,8 @@ export default function ProductTable() {
             }
             disabled={!formData.category}
           >
-            {category?.categoryItems?.length > 0 ? (
-              category.categoryItems.map((item) => (
+            {categories?.categoryItems?.length > 0 ? (
+              categories.categoryItems.map((item) => (
                 <MenuItem key={item.id} value={item.id}>
                   {item.name}
                 </MenuItem>

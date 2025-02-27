@@ -25,12 +25,14 @@ import {
   UPDATE_CATEGORY_ITEM_REQUEST,
   UPDATE_CATEGORY_ITEM_SUCCESS,
   UPDATE_CATEGORY_ITEM_FAILURE,
+  GET_CATEGORYY_SUCCESS,
 } from "./ActionType";
 
 const initialState = {
   loading: false,
   categories: { content: [], totalPages: 1 }, // Đảm bảo có cấu trúc đúng từ API
   categoryItems: { content: [], totalPages: 1 },
+  category: [],
   error: null,
   success: false,
 };
@@ -40,6 +42,11 @@ export const categoriesReducer = (state = initialState, action) => {
     // 🟢 Lấy danh sách danh mục
     case GET_CATEGORY_REQUEST:
       return { ...state, loading: true, error: null };
+    case GET_CATEGORYY_SUCCESS:
+                return {
+                    ...state,
+                    category: action.payload,
+                };
     case GET_CATEGORY_SUCCESS:
       return {
         ...state,

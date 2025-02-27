@@ -1,6 +1,6 @@
 import { api } from "../../config/api";
 import { GET_CATEGORY_ITEMS_FAILURE, GET_CATEGORY_ITEMS_REQUEST, GET_CATEGORY_ITEMS_SUCCESS } from "../CategoryTest/ActionType";
-import { CREATE_CATEGORY_FAILURE, CREATE_CATEGORY_ITEM_FAILURE, CREATE_CATEGORY_ITEM_REQUEST, CREATE_CATEGORY_ITEM_SUCCESS, CREATE_CATEGORY_REQUEST, CREATE_CATEGORY_SUCCESS, DELETE_CATEGORY_FAILURE, DELETE_CATEGORY_ITEM_FAILURE, DELETE_CATEGORY_ITEM_REQUEST, DELETE_CATEGORY_ITEM_SUCCESS, DELETE_CATEGORY_REQUEST, DELETE_CATEGORY_SUCCESS, GET_CATEGORY_FAILURE, GET_CATEGORY_REQUEST, GET_CATEGORY_SUCCESS, UPDATE_CATEGORY_FAILURE, UPDATE_CATEGORY_ITEM_FAILURE, UPDATE_CATEGORY_ITEM_REQUEST, UPDATE_CATEGORY_ITEM_SUCCESS, UPDATE_CATEGORY_REQUEST, UPDATE_CATEGORY_SUCCESS } from "./ActionType";
+import { CREATE_CATEGORY_FAILURE, CREATE_CATEGORY_ITEM_FAILURE, CREATE_CATEGORY_ITEM_REQUEST, CREATE_CATEGORY_ITEM_SUCCESS, CREATE_CATEGORY_REQUEST, CREATE_CATEGORY_SUCCESS, DELETE_CATEGORY_FAILURE, DELETE_CATEGORY_ITEM_FAILURE, DELETE_CATEGORY_ITEM_REQUEST, DELETE_CATEGORY_ITEM_SUCCESS, DELETE_CATEGORY_REQUEST, DELETE_CATEGORY_SUCCESS, GET_CATEGORY_FAILURE, GET_CATEGORY_REQUEST, GET_CATEGORY_SUCCESS, GET_CATEGORYY_SUCCESS, UPDATE_CATEGORY_FAILURE, UPDATE_CATEGORY_ITEM_FAILURE, UPDATE_CATEGORY_ITEM_REQUEST, UPDATE_CATEGORY_ITEM_SUCCESS, UPDATE_CATEGORY_REQUEST, UPDATE_CATEGORY_SUCCESS } from "./ActionType";
 
 export const getCategories =
   (restaurantId, page = 0, size = 5, sortBy = "id", sortDir = "asc", jwt) =>
@@ -237,4 +237,26 @@ export const updateCategoryItem = (id, updatedData, jwt) => async (dispatch) => 
       payload: error.response?.data?.message || "Cập nhật danh mục con thất bại!",
     });
   }
+};
+
+export const getCategory = ({id, jwt}) => {
+    return async (dispatch) => {
+        try {
+            const response = await api.get(
+                `/api/admin/category/restaurant/${id}/category`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${jwt}`,
+                    },
+                }
+            );
+            console.log("get category", response.data);
+            dispatch({
+                type: GET_CATEGORYY_SUCCESS,
+                payload:response.data,
+            });
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
 };
