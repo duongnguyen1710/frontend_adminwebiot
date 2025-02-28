@@ -22,26 +22,69 @@ export const getBlogById = (id) => async (dispatch) => {
 };
 
 /** 📌 2. Thêm Blog mới */
-export const createBlog = (blogData) => async (dispatch) => {
-    dispatch({ type: CREATE_BLOG_REQUEST });
-    try {
-        const response = await api.post(`/api/admin/blog`, blogData, getAuthHeader());
-        dispatch({ type: CREATE_BLOG_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: CREATE_BLOG_FAILURE, payload: error.message });
-    }
-};
+export const createBlog = (formData, jwt) => {
+    return async (dispatch) => {
+        dispatch({ type: CREATE_BLOG_REQUEST });
+  
+        try {
+            console.log("📡 Gửi request đến API...");
+  
+            const { data } = await api.post('/api/admin/blog', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${jwt}`,
+                },
+            });
+  
+            console.log("✅ API Response:", data);
+  
+            dispatch({
+                type: CREATE_BLOG_SUCCESS,
+                payload: data,
+            });
+        } catch (error) {
+            console.error("❌ API Error:", error);
+            dispatch({
+                type: CREATE_BLOG_FAILURE,
+                payload: error.response?.data || error.message,
+            });
+        }
+    };
+  };
+  
+
 
 /** 📌 3. Cập nhật Blog */
-export const updateBlog = (id, blogData) => async (dispatch) => {
-    dispatch({ type: UPDATE_BLOG_REQUEST });
-    try {
-        const response = await api.put(`/api/admin/blog/${id}`, blogData, getAuthHeader());
-        dispatch({ type: UPDATE_BLOG_SUCCESS, payload: response.data });
-    } catch (error) {
-        dispatch({ type: UPDATE_BLOG_FAILURE, payload: error.message });
-    }
-};
+export const updateBlog = (id, formData, jwt) => {
+    return async (dispatch) => {
+        dispatch({ type: UPDATE_BLOG_REQUEST });
+  
+        try {
+            console.log(`📡 Gửi request cập nhật blog ID: ${id}...`);
+  
+            const { data } = await api.put(`/api/admin/blog/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${jwt}`,
+                },
+            });
+  
+            console.log("✅ API Response:", data);
+  
+            dispatch({
+                type: UPDATE_BLOG_SUCCESS,
+                payload: data,
+            });
+        } catch (error) {
+            console.error("❌ API Error:", error);
+            dispatch({
+                type: UPDATE_BLOG_FAILURE,
+                payload: error.response?.data || error.message,
+            });
+        }
+    };
+  };
+  
 
 /** 📌 4. Xóa Blog */
 export const deleteBlog = (id) => async (dispatch) => {

@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createProduct,
   deleteProduct,
+  filterProductsByCategory,
   getProductRestaurantId,
   updateProduct,
   updateProductStatus,
@@ -262,6 +263,8 @@ export default function ProductTable() {
     }
   };
 
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   return (
     <Box>
       <ToastContainer />
@@ -275,6 +278,27 @@ export default function ProductTable() {
           title={"Sản phẩm"}
           sx={{ pt: 2, alignItems: "center" }}
         />
+        <TextField
+          select
+          label="Lọc theo danh mục"
+          value={selectedCategory}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+            dispatch(
+              filterProductsByCategory(e.target.value, 0, pageSize, jwt)
+            ); // Gọi API lọc sản phẩm theo danh mục
+          }}
+          fullWidth
+          margin="dense"
+        >
+          <MenuItem value="">Tất cả</MenuItem>
+          {categories?.category?.map((cat) => (
+            <MenuItem key={cat.id} value={cat.id}>
+              {cat.name}
+            </MenuItem>
+          ))}
+        </TextField>
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>

@@ -188,6 +188,34 @@ const productReducer = (state = initialState, action) => {
           error: action.payload,
         };
 
+
+        case actionTypes.FILTER_PRODUCT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: null,
+            };
+
+        case actionTypes.FILTER_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                products: action.payload.content,
+                pagination: {
+                    page: action.payload.pageable.pageNumber,
+                    size: action.payload.pageable.pageSize,
+                    totalPages: action.payload.totalPages,
+                    totalElements: action.payload.totalElements,
+                },
+            };
+
+        case actionTypes.FILTER_PRODUCT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            };
+
     default:
       return state;
   }
