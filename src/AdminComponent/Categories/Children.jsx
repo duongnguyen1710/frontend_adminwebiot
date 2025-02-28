@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getCategories,
   getCategoryItems,
   createCategoryItem,
   updateCategoryItem,
   deleteCategoryItem,
+  getCategories,
 } from "../../componet/State/Categories/Action";
 
 const PAGE_SIZE = 5;
